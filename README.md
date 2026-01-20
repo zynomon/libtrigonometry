@@ -4,7 +4,7 @@ is nothing but a fun project also my way to learn more about unix shared  Librar
 
 # `libtrigonometry`Contains for now, 
 COS (**central output service**) 
-COSEC ( ** crash output servicer** and ** easy calibrator ** ) 
+COSEC ( **crash output servicer** and **easy calibrator** ) 
 
 
 with  .so files and  fully configured cmake for it. 

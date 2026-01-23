@@ -1,4 +1,5 @@
 <h1> CURRENTLY UNDER CONSTRUCTION AND NOT BATTLE TESTED WAIT FEW DAYS </h1>
+<img width="1280" height="800" alt="test-os-for-trig" src="https://github.com/user-attachments/assets/0f83521a-bf36-4622-b548-38fc28ab3491" />
 # libtrigonometry
 is nothing but a fun project also my way to learn more about unix shared  Library
 

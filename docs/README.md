@@ -36,7 +36,7 @@ logger.getLogContent();      // Returns all captured output
 ```
 
 
-## COSEC <subCrash output stream executor</sub>  
+## COSEC <sub>Crash output stream executor</sub>  
 #### Technology : Qt6 + C++
 #### OS : Linux, BSD ( havent tested ) , MAC ( havent tested ) , WINDOWS ( havent tested )
 #### CMAKE LINKING ID : crash (link in cmake using  Trig::crash )

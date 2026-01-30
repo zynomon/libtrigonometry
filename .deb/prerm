@@ -1,0 +1,4 @@
+#!/bin/bash
+
+sudo rm -rf /usr/lib/trigonometry /usr/lib/cmake/Trig /usr/include/trigonometry/
+sudo ldconfig

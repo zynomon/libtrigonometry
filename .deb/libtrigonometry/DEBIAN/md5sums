@@ -1,6 +1,0 @@
-3d2a1f90219c1587df646fab478b8e46  usr/include/trigonometry/crash/cos
-ae0f75884d44028568727485cbb4d9a7  usr/include/trigonometry/crash/cos.h
-be6999a0ae8808314f89ec7d3ed2f96d  usr/include/trigonometry/crash/cosec
-39581ec8c2619e12c50449b98116b5e6  usr/include/trigonometry/crash/cosec.h
-3749ee9ffe7b2ca28339300feac816df  usr/lib/cmake/Trig/TrigConfig.cmake
-0aa177df500aa94764a66f85631fea1e  usr/lib/trigonometry/libcrash.so

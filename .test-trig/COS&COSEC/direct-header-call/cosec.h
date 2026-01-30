@@ -17,13 +17,12 @@
 #include <QFile>
 #include <QDir>
 #include <QVBoxLayout>
-#include <QMessageBox>
 #include <QTimer>
 #include <iostream>
 
 class COSEC;
 
-class CrashOrgMan {
+class Crash_Info {
 private:
     COS* logger;
     QMainWindow* mainWindow;
@@ -31,18 +30,21 @@ private:
     QString windowTitle;
     bool crashHandlerActive;
 
-    inline CrashOrgMan() : logger(nullptr), mainWindow(nullptr), crashHandlerActive(false) {
+    inline Crash_Info() : logger(nullptr), mainWindow(nullptr), crashHandlerActive(false) {
         logger = new COS();
-        logger->setCrashCallback([this](const CrashInfo& info) { handleCrash(info); });
+
+        logger->setCrashCallback([this](const CrashInfo& info) {
+            handleCrash(info);
+        });
     }
 
-    inline ~CrashOrgMan() { delete logger; }
+    inline ~Crash_Info() { delete logger; }
 
     void handleCrash(const CrashInfo& crashInfo);
 
 public:
-    inline static CrashOrgMan& instance() {
-        static CrashOrgMan inst;
+    inline static Crash_Info& instance() {
+        static Crash_Info inst;
         return inst;
     }
 
@@ -64,11 +66,11 @@ public:
     inline const QIcon& getIcon() const { return windowIcon; }
     inline const QString& getTitle() const { return windowTitle; }
 
-    CrashOrgMan(const CrashOrgMan&) = delete;
-    CrashOrgMan& operator=(const CrashOrgMan&) = delete;
+    Crash_Info(const Crash_Info&) = delete;
+    Crash_Info& operator=(const Crash_Info&) = delete;
 };
 
-#define REG_CRASH() CrashOrgMan::instance().registerWindow(this)
+#define REG_CRASH() Crash_Info::instance().registerWindow(this)
 
 class COSEC : public QDialog {
 
@@ -113,7 +115,8 @@ private:
 
         QTextEdit* logText = new QTextEdit();
         logText->setReadOnly(true);
-        logText->setPlainText(QString::fromStdString(crashInfo.logContent));
+
+        logText->setPlainText([](const std::string& p){QFile f(QString::fromStdString(p)); return f.open(QIODevice::ReadOnly|QIODevice::Text)?f.readAll():"[ERROR: Log file not found]";}(crashInfo.logPath));
         logText->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         logText->setFont(QFont("Monospace", 9));
 
@@ -130,7 +133,7 @@ private:
         copyBtn->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
         connect(copyBtn, &QPushButton::clicked, [logText]() {
             QApplication::clipboard()->setText(logText->toPlainText());
-            QMessageBox::information(nullptr, "Copied", "Logs copied to clipboard.");
+            std::cout << "NOTHING FOUND TO COPY-PASTE MAKE SURE TO HAVE SOME MAINSTREAM CLIPBOARD MANAGER INSTALLED";
         });
 
         QPushButton* saveBtn = new QPushButton("Save");
@@ -147,9 +150,11 @@ private:
                                                          QDir::homePath() + "/" + defName, "Log Files (*.log);;All Files (*)");
 
             if (!fname.isEmpty()) {
-                QFile::copy(QString::fromStdString(crashInfo.logPath), fname) ?
-                    QMessageBox::information(this, "Success", "Log file saved successfully.") :
-                    QMessageBox::warning(this, "Error", "Failed to save log file.");
+                if (QFile::copy(QString::fromStdString(crashInfo.logPath), fname)) {
+                    std::cout << "\033[1;37m [SUCCESS] Log file saved successfully.\033[0m" << std::endl;
+                } else {
+                    std::cout << "\033[1;37m [ERROR] Failed to save log file.\033[0m" << std::endl;
+                }
             }
         });
 
@@ -161,9 +166,7 @@ private:
         openBtn->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
         connect(openBtn, &QPushButton::clicked, [this]() {
             QFileInfo fi(QString::fromStdString(crashInfo.logPath));
-            if (!QDesktopServices::openUrl(QUrl::fromLocalFile(fi.absolutePath()))) {
-                QMessageBox::warning(this, "Error", "Failed to open log folder.");
-            }
+            QDesktopServices::openUrl(QUrl::fromLocalFile(fi.absolutePath()));
         });
 
         buttonsLayout->addWidget(copyBtn, 1);
@@ -176,6 +179,7 @@ private:
 
         return page;
     }
+
     inline QWidget* createDetailsPage() {
         QWidget* page = new QWidget();
         QHBoxLayout* mainLayout = new QHBoxLayout(page);
@@ -361,14 +365,14 @@ public:
         setupUI();
     }
 };
-inline void CrashOrgMan::handleCrash(const CrashInfo& crashInfo) {
+inline void Crash_Info::handleCrash(const CrashInfo& crashInfo) {
     if (crashHandlerActive) {
         std::cerr << "Recursive crash detected, terminated." << std::endl;
         std::exit(crashInfo.signalNumber);
     }
     crashHandlerActive = true;
 
-    std::cout << "\nCrash handler called.\nSignal: " << crashInfo.signalName
+    std::cout << "Crash handler was being called.\nSignal: " << crashInfo.signalName
               << "\nTime: " << crashInfo.timestamp << std::endl;
 
     updateWindowInfo();

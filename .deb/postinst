@@ -1,0 +1,28 @@
+#!/bin/bash
+set -e
+
+normal_install() {
+    rm -rf /usr/lib/cmake/Trig /usr/include/trigonometry/
+}
+
+dev_install() {
+
+    ln -sf /usr/lib/cmake/Trig/README.txt /usr/lib/trigonometry/
+    ln -sf /usr/lib/cmake/Trig/README.txt /usr/include/trigonometry/
+}
+
+echo "Final step,"
+
+echo "Are you installing \"libtrigonometry\" for development? (y/n)"
+read -t 3 -n 1 answer 2>/dev/null || answer='n'
+echo ""
+
+if [[ "${answer,,}" == "y" ]]; then
+    echo "Installing development files..."
+    dev_install
+else
+    echo "Standard installation..."
+    normal_install
+fi
+
+sudo ldconfig ; /usr/sbin/ldconfig ; echo "Finalizing..."

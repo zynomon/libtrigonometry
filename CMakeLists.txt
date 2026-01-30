@@ -4,13 +4,18 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include(GNUInstallDirs)
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
-set(CMAKE_AUTOMOC ON)
+
 
 # CRASHNIGGER COS?COSEC
-
-add_library(crash SHARED cos.cpp cosec.cpp cosec.h cos.h)
+add_library(crash SHARED
+    CRASH/cos.cpp
+    CRASH/cosec.cpp
+    CRASH/cosec.h
+    CRASH/cos.h
+)
 set_target_properties(crash PROPERTIES PREFIX "lib" OUTPUT_NAME "crash")
 target_link_libraries(crash PRIVATE Qt6::Core Qt6::Widgets)
+
 find_program(STRIP_EXECUTABLE strip)
 if(STRIP_EXECUTABLE)
     add_custom_command(TARGET crash POST_BUILD
@@ -27,42 +32,43 @@ install(TARGETS crash
 
 # use Debug profile <"  cmake --build . --config Debug   "> in terminal
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    install(FILES cos.h cosec.h
+    install(FILES CRASH/cos.h CRASH/cosec.h
         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/trigonometry/crash
     )
-    install(FILES cos.cpp
+    install(FILES CRASH/cos.cpp
         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/trigonometry/crash
         RENAME cos
     )
-    install(FILES cosec.cpp
+    install(FILES CRASH/cosec.cpp
         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/trigonometry/crash
         RENAME cosec
     )
-
     install(FILES TrigConfig.cmake
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Trig/
     )
+    install(FILES .deb/README.txt
+     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Trig/
+    )
 endif()
 
-
-
-
-# .deb, tgz and zip
 include(InstallRequiredSystemLibraries)
 
 set(CPACK_PACKAGE_NAME "libtrigonometry")
 set(CPACK_PACKAGE_VENDOR "error.os")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY
-    "Contains COS + COSEC (Qt) crash handling libraries"
+    "Contains COS (CXX) + COSEC (Qt) crash handling libraries"
 )
 set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
 set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
 set(CPACK_PACKAGE_VERSION_PATCH 0)
-
 set(CPACK_PACKAGE_CONTACT "Zynomon Aelius <zynomon@proton.me>")
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Zynomon Aelius")
-
 set(CPACK_GENERATOR "DEB;TGZ;ZIP")
 set(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6, libqt6core6, libqt6gui6, libqt6widgets6")
+
+set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA
+    "${CMAKE_CURRENT_SOURCE_DIR}/.deb/postinst"
+    "${CMAKE_CURRENT_SOURCE_DIR}/.deb/prerm"
+)
 
 include(CPack)

@@ -1,9 +1,0 @@
-use these two commands to build and remove old files, simple as that yeah
-
-rm  libtrigonometry.deb
-dpkg --build libtrigonometry
-
-
----> so
- basically
-this is a .deb builder

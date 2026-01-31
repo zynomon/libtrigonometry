@@ -50,7 +50,7 @@ __***Screenshots:**__ This application fetches icon for the window , and more.
 
 
 ### steps;
-0. download from here ; [libtrigonometry.deb {LINUX - debian}](https://github.com/zynomon/libtrigonometry/blob/main/Release%20files/libtrigonometry-1.0.0-Linux.deb)
+0. download from here ; [libtrigonometry.deb {LINUX - debian}](https://github.com/zynomon/libtrigonometry/raw/main/Release%20files/libtrigonometry-1.0.0-Linux.deb)
 1. type `find_packages(Trig)`
 2. Link yout project against `Trig::crash` ( crash means bundle with cos and cosec )
 3. use `#include cosec` in your project
